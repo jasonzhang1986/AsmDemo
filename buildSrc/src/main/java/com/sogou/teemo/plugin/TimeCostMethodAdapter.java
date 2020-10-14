@@ -48,4 +48,12 @@ public class TimeCostMethodAdapter extends AdviceAdapter {
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, "android/util/Log", "d", "(Ljava/lang/String;Ljava/lang/String;)I", false);//注意： Log.d 方法是有返回值的，需要 pop 出去
         mv.visitInsn(Opcodes.POP);//插入字节码后要保证栈的清洁，不影响原来的逻辑，否则就会产生异常，也会对其他框架处理字节码造成影响
     }
+
+    @Override
+    public void visitMethodInsn(int opcodeAndSource, String owner, String name, String descriptor, boolean isInterface) {
+        if (owner.equals("android/telephony/TelephonyManager") && name.equals("getDeviceId") && descriptor.equals("()Ljava/lang/String;")) {
+            System.out.println(String.format("getDeviceId invoke by className:%s, methodName:%s", className, methodName));
+        }
+        super.visitMethodInsn(opcodeAndSource, owner, name, descriptor, isInterface);
+    }
 }
